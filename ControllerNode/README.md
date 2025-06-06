@@ -18,18 +18,6 @@ Este directorio contiene las estructuras de datos y módulos principales para la
 - **nlohmann/json**: Para parseo y serialización de JSON. 
 - **cppcodec**: Para codificación y decodificación base64 eficiente y segura. 
 
-### Notas de Producción
-- Asegúrate de que el include path de tu proyecto apunte a las carpetas donde están los headers de estas librerías.
-- cppcodec y nlohmann/json son header-only, no requieren linking especial.
-- Crow es header-only, pero requiere linking con Boost y OpenSSL si usas HTTPS.
-
-## Comunicación HTTP con Disk Nodes
-
-- **Librería elegida para cliente:** Boost.Beast (solo para comunicación con Disk Nodes, no para el servidor HTTP principal).
-- **Protocolo:** JSON sobre HTTP.
-    - `POST /block` para almacenar bloques. Body: `{ "blockId": "...", "data": "...", "isParity": true/false }`
-    - `GET /block/{blockId}` para recuperar bloques.
-    - Respuestas en JSON con estado y datos o mensaje de error.
 
 ## Lógica RAID 5
 - División de documentos en bloques de tamaño fijo (4096 bytes por defecto).
