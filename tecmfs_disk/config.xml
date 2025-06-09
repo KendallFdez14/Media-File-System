@@ -1,0 +1,5 @@
+<DiskNodeConfig>
+    <IP>127.0.0.1</IP>
+    <Port>8000</Port>
+    <Path>/var/tecmfs/disk0</Path>
+</DiskNodeConfig>
