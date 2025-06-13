@@ -1,0 +1,5 @@
+# Ignore block storage for all disk nodes
+tecmfs_disk/disk0/blocks/
+tecmfs_disk/disk1/blocks/
+tecmfs_disk/disk2/blocks/
+tecmfs_disk/disk3/blocks/

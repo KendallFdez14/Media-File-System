@@ -1,16 +1,25 @@
 #include "BlockMap.h"
 
-void BlockMap::registerBlock(const std::string& documentName, int diskNodeId, uint64_t blockIndex, bool isParity) {
-    BlockLocation loc{diskNodeId, blockIndex, isParity};
-    documentBlocks[documentName].blocks.push_back(loc);
-    StoredBlockInfo info{blockIndex, documentName, isParity};
-    diskNodes[diskNodeId].storedBlocks.push_back(info);
+void BlockMap::addDocument(const std::string& docName, const std::vector<std::vector<BlockLocation>>& blockLocations, size_t docSize) {
+    docMap[docName] = DocInfo{blockLocations, docSize};
 }
 
-std::vector<BlockLocation> BlockMap::getBlockLocations(const std::string& documentName) const {
-    auto it = documentBlocks.find(documentName);
-    if (it != documentBlocks.end()) {
-        return it->second.blocks;
+const std::vector<std::vector<BlockLocation>>* BlockMap::getBlockLocations(const std::string& docName) const {
+    auto it = docMap.find(docName);
+    if (it != docMap.end()) {
+        return &it->second.locations;
     }
-    return {};
-} 
+    return nullptr;
+}
+
+void BlockMap::removeDocument(const std::string& docName) {
+    docMap.erase(docName);
+}
+
+size_t BlockMap::getDocumentSize(const std::string& docName) const {
+    auto it = docMap.find(docName);
+    if (it != docMap.end()) {
+        return it->second.size;
+    }
+    return 0;
+}

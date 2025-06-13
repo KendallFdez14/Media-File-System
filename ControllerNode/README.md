@@ -31,3 +31,19 @@ Este directorio contiene las estructuras de datos y módulos principales para la
 - Monitor depende de BlockMap, RAID5Manager y DiskNodeHttpClient.
 - BlockMap provee utilidades para registrar y consultar la ubicación de bloques y paridad.
 - RAID5Manager define los parámetros globales de RAID 5 (BLOCK_SIZE, NUM_DISK_NODES). 
+
+bash clean_old_blocks.sh
+
+python3 tecmfs_disk/disk_node.py tecmfs_disk/disk0/config0.xml
+
+python3 tecmfs_disk/disk_node.py tecmfs_disk/disk1/config1.xml
+
+python3 tecmfs_disk/disk_node.py tecmfs_disk/disk2/config2.xml
+
+python3 tecmfs_disk/disk_node.py tecmfs_disk/disk3/config3.xml
+
+cd ControllerNode
+mkdir -p build && cd build
+cmake ..
+make
+./controller_node

@@ -1,6 +1,8 @@
 #pragma once
 #include <string>
 #include <vector>
+#include <cstdint>
+#include <optional>
 #include "../core/BlockMap.h"
 #include "../core/RAID5Manager.h"
 #include "../http/DiskNodeHttpClient.h"
@@ -8,12 +10,21 @@
 class DocumentManager {
 public:
     DocumentManager(BlockMap& blockMap, RAID5Manager& raid5, DiskNodeHttpClient& diskClient);
-    bool addDocument(const std::string& name, const std::string& type, const std::vector<uint8_t>& data);
-    bool deleteDocument(const std::string& name);
-    BlockMetadata* findDocument(const std::string& name);
-    std::vector<uint8_t> downloadDocument(const std::string& name);
+
+    // Agrega un documento, lo divide en bloques y lo mapea
+    void addDocument(const std::string& name, const std::vector<uint8_t>& data);
+
+    // Elimina un documento
+    void deleteDocument(const std::string& name);
+
+    // Recupera los datos de un documento
+    std::vector<uint8_t> getDocument(const std::string& name);
+
+    // Consulta si existe un documento
+    bool exists(const std::string& name) const;
+
 private:
     BlockMap& blockMap;
     RAID5Manager& raid5;
     DiskNodeHttpClient& diskClient;
-}; 
+};

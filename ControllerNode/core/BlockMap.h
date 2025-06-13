@@ -1,17 +1,35 @@
 #pragma once
-#include <unordered_map>
 #include <vector>
+#include <cstdint>
 #include <string>
-#include "BlockMetadata.h"
-#include "DiskNodeState.h"
+#include <unordered_map>
 
-struct BlockMap {
-    // documentName -> BlockMetadata
-    std::unordered_map<std::string, BlockMetadata> documentBlocks;
-    // diskNodeId -> DiskNodeState
-    std::unordered_map<int, DiskNodeState> diskNodes;
+// Representa la ubicación de un bloque en un nodo disco
+struct BlockLocation {
+    size_t diskIndex; // Índice del nodo disco en el RAID
+    size_t stripeIndex; // Índice del stripe
+    bool isParity; // Si es bloque de paridad
+};
 
-    // Métodos utilitarios
-    void registerBlock(const std::string& documentName, int diskNodeId, uint64_t blockIndex, bool isParity);
-    std::vector<BlockLocation> getBlockLocations(const std::string& documentName) const;
-}; 
+// Mapa de bloques de un documento
+class BlockMap {
+public:
+    // Asocia un documento con sus bloques distribuidos
+    void addDocument(const std::string& docName, const std::vector<std::vector<BlockLocation>>& blockLocations, size_t docSize);
+
+    // Obtiene la ubicación de los bloques de un documento
+    const std::vector<std::vector<BlockLocation>>* getBlockLocations(const std::string& docName) const;
+
+    // Elimina un documento del mapa
+    void removeDocument(const std::string& docName);
+
+    // Obtiene el tamaño original del documento
+    size_t getDocumentSize(const std::string& docName) const;
+
+private:
+    struct DocInfo {
+        std::vector<std::vector<BlockLocation>> locations; // [stripe][disk]
+        size_t size;
+    };
+    std::unordered_map<std::string, DocInfo> docMap;
+};

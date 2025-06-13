@@ -1,0 +1,24 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "${workspaceFolder}/Crow/include",
+                "${workspaceFolder}/external/json",
+                "/home/kendall/Progra/Media-File-System/external/cppcodec",
+                "${workspaceFolder}/ControllerNode/core",
+                "${workspaceFolder}/ControllerNode/http",
+                "${workspaceFolder}/ControllerNode/manager",
+                "/home/kendall/Progra/Media-File-System/vcpkg/installed/x64-linux/include",
+                "/usr/include",
+                "/usr/local/include"
+            ],
+            "defines": [],
+            "compilerPath": "/usr/bin/g++",
+            "cStandard": "c11",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "linux-gcc-x64"
+        }
+    ],
+    "version": 4
+}

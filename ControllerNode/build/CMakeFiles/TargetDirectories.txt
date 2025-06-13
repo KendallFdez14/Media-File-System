@@ -1,0 +1,4 @@
+/home/kendall/Progra/Media-File-System/ControllerNode/build/CMakeFiles/controller_node.dir
+/home/kendall/Progra/Media-File-System/ControllerNode/build/CMakeFiles/controller_node_server.dir
+/home/kendall/Progra/Media-File-System/ControllerNode/build/CMakeFiles/edit_cache.dir
+/home/kendall/Progra/Media-File-System/ControllerNode/build/CMakeFiles/rebuild_cache.dir

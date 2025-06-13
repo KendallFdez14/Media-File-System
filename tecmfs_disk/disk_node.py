@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 import os
+import sys
 from utils.config_parser import load_config
 
 BLOCK_SIZE = 4096  # 4 KiB
@@ -7,8 +8,11 @@ TOTAL_SIZE = 64 * 1024 * 1024  # 64 MiB
 NUM_BLOCKS = TOTAL_SIZE // BLOCK_SIZE
 
 app = Flask(__name__)
-config = load_config("config.xml")
-disk_path = config['path']
+
+# Permitir pasar el archivo de configuración como argumento
+config_file = sys.argv[1] if len(sys.argv) > 1 else "config.xml"
+config = load_config(config_file)
+disk_path = os.path.join(config['path'], 'blocks')
 
 # Asegura la existencia del directorio
 os.makedirs(disk_path, exist_ok=True)

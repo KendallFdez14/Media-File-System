@@ -1,17 +1,42 @@
 #pragma once
 #include <vector>
 #include <cstdint>
+#include <string>
 
-// RAID 5: N Disk Nodes, N-1 bloques de datos, 1 bloque de paridad rotatoria
-// El tamaño de bloque y el número de nodos deben ser iguales en todos los Disk Nodes
-constexpr size_t BLOCK_SIZE = 4096;
-constexpr int NUM_DISK_NODES = 4;
+// Estructura para representar un bloque de datos o paridad
+struct Block {
+    std::vector<uint8_t> data;
+    bool isParity;
+};
+
+// Estructura para representar un nodo disco
+struct DiskNode {
+    std::string ip;
+    uint16_t port;
+    // Aquí podrías agregar más info, como estado, path, etc.
+};
 
 class RAID5Manager {
 public:
-    // Divide los datos en bloques y calcula la paridad (XOR)
-    // dataBlocks: N-1 bloques de datos, parityBlock: bloque de paridad
-    void stripeAndCalculateParity(const std::vector<uint8_t>& data, int numDisks, std::vector<std::vector<uint8_t>>& dataBlocks, std::vector<uint8_t>& parityBlock);
-    // Recupera un bloque perdido usando la paridad y los otros bloques
-    std::vector<uint8_t> recoverBlock(const std::vector<std::vector<uint8_t>>& dataBlocks, const std::vector<uint8_t>& parityBlock, int missingBlockIndex);
-}; 
+    RAID5Manager(size_t numDisks, size_t blockSize);
+
+    // Divide los datos en bloques y calcula la paridad
+    std::vector<std::vector<Block>> stripeData(const std::vector<uint8_t>& data);
+
+    // Reconstruye los datos a partir de los bloques y la paridad
+    std::vector<uint8_t> reconstructData(const std::vector<std::vector<Block>>& stripes, size_t originalSize);
+
+    // Agrega un nodo disco al RAID
+    void addDiskNode(const DiskNode& node);
+
+    // Obtiene los nodos disco
+    const std::vector<DiskNode>& getDiskNodes() const;
+
+    size_t getBlockSize() const;
+    size_t getNumDisks() const;
+
+private:
+    size_t numDisks;
+    size_t blockSize;
+    std::vector<DiskNode> diskNodes;
+};
