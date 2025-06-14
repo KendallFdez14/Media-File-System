@@ -10,7 +10,7 @@ struct Block {
 };
 
 // Estructura para representar un nodo disco
-struct DiskNode {
+struct DiskNodeInfo {
     std::string ip;
     uint16_t port;
     // Aquí podrías agregar más info, como estado, path, etc.
@@ -27,10 +27,15 @@ public:
     std::vector<uint8_t> reconstructData(const std::vector<std::vector<Block>>& stripes, size_t originalSize);
 
     // Agrega un nodo disco al RAID
-    void addDiskNode(const DiskNode& node);
+    void addDiskNode(const DiskNodeInfo& node);
 
     // Obtiene los nodos disco
-    const std::vector<DiskNode>& getDiskNodes() const;
+    const std::vector<DiskNodeInfo>& getDiskNodes() const;
+
+    // Devuelve la información del nodo de disco por índice
+    const DiskNodeInfo& getDiskNode(size_t index) const {
+        return diskNodes.at(index);
+    }
 
     size_t getBlockSize() const;
     size_t getNumDisks() const;
@@ -38,5 +43,5 @@ public:
 private:
     size_t numDisks;
     size_t blockSize;
-    std::vector<DiskNode> diskNodes;
+    std::vector<DiskNodeInfo> diskNodes;
 };

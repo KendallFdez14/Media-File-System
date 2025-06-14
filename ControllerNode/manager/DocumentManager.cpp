@@ -19,7 +19,7 @@ void DocumentManager::addDocument(const std::string& name, const std::vector<uin
                 padded.resize(blockSize, 0);
                 diskClient.writeBlock(diskNodes[d].ip, diskNodes[d].port, s, padded);
             }
-            stripeLoc.push_back(BlockLocation{d, s, stripes[s][d].isParity});
+            stripeLoc.push_back(BlockLocation{d, s, stripes[s][d].isParity, s});
         }
         locations.push_back(stripeLoc);
     }

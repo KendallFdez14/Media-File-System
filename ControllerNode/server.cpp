@@ -76,6 +76,42 @@ int main(int argc, char* argv[]) {
         }
     });
 
+    // Endpoint: Estado de bloques (GET /status)
+    CROW_ROUTE(app, "/status").methods("GET"_method)([&]() {
+        std::ostringstream html;
+        html << "<html><head><title>Estado RAID</title><style>table,th,td{border:1px solid #888;border-collapse:collapse;padding:4px;}th{background:#eee;}</style></head><body>";
+        html << "<h2>Estado de bloques en RAID</h2>";
+        auto allLocations = blockMap.getAllLocations();
+        for (const auto& [docName, locations] : allLocations) {
+            html << "<h3>Documento: " << docName << "</h3>";
+            html << "<table><tr><th>Stripe</th><th>Nodo</th><th>Block ID</th><th>Paridad</th><th>Estado</th></tr>";
+            for (const auto& loc : locations) {
+                html << "<tr>";
+                html << "<td>" << loc.stripeIndex << "</td>";
+                html << "<td>" << loc.diskIndex << "</td>";
+                html << "<td>" << loc.blockId << "</td>";
+                html << "<td>" << (loc.isParity ? "Sí" : "No") << "</td>";
+                auto data = diskClient.readBlock(
+                    raid5.getDiskNodes()[loc.diskIndex].ip,
+                    raid5.getDiskNodes()[loc.diskIndex].port,
+                    loc.blockId
+                );
+                if (data.has_value())
+                    html << "<td style='color:green'>OK</td>";
+                else
+                    html << "<td style='color:red'>MISSING</td>";
+                html << "</tr>";
+            }
+            html << "</table>";
+        }
+        html << "</body></html>";
+        crow::response res;
+        res.code = 200;
+        res.set_header("Content-Type", "text/html; charset=utf-8");
+        res.body = html.str();
+        return res;
+    });
+
     // Puerto configurable por argumento
     int port = 18080;
     if (argc > 1) port = std::stoi(argv[1]);

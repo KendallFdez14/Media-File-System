@@ -42,8 +42,13 @@ python3 tecmfs_disk/disk_node.py tecmfs_disk/disk2/config2.xml
 
 python3 tecmfs_disk/disk_node.py tecmfs_disk/disk3/config3.xml
 
+bash run_all_disk_nodes.sh
+
 cd ControllerNode
 mkdir -p build && cd build
 cmake ..
 make
 ./controller_node
+
+echo "Hola, mundo RAID 5" > archivo.txt
+curl -X POST "http://localhost:18080/add?name=archivo.txt" --data-binary @archivo.txt

@@ -5,11 +5,11 @@
 RAID5Manager::RAID5Manager(size_t numDisks, size_t blockSize)
     : numDisks(numDisks), blockSize(blockSize) {}
 
-void RAID5Manager::addDiskNode(const DiskNode& node) {
+void RAID5Manager::addDiskNode(const DiskNodeInfo& node) {
     diskNodes.push_back(node);
 }
 
-const std::vector<DiskNode>& RAID5Manager::getDiskNodes() const {
+const std::vector<DiskNodeInfo>& RAID5Manager::getDiskNodes() const {
     return diskNodes;
 }
 
