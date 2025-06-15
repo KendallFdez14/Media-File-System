@@ -7,8 +7,10 @@
 #include "../core/RAID5Manager.h"
 #include "../http/DiskNodeHttpClient.h"
 
+// Clase que gestiona los documentos en el sistema distribuido
 class DocumentManager {
 public:
+    // Constructor: recibe referencias a BlockMap, RAID5Manager y DiskNodeHttpClient
     DocumentManager(BlockMap& blockMap, RAID5Manager& raid5, DiskNodeHttpClient& diskClient);
 
     // Agrega un documento, lo divide en bloques y lo mapea

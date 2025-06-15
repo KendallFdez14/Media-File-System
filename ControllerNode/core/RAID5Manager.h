@@ -13,11 +13,13 @@ struct Block {
 struct DiskNodeInfo {
     std::string ip;
     uint16_t port;
-    // Aquí podrías agregar más info, como estado, path, etc.
+   
 };
 
+// Clase que gestiona la lógica de RAID 5
 class RAID5Manager {
 public:
+    // Constructor: inicializa el número de discos y el tamaño de bloque
     RAID5Manager(size_t numDisks, size_t blockSize);
 
     // Divide los datos en bloques y calcula la paridad
@@ -37,7 +39,9 @@ public:
         return diskNodes.at(index);
     }
 
+    // Devuelve el tamaño de bloque
     size_t getBlockSize() const;
+    // Devuelve el número de discos
     size_t getNumDisks() const;
 
 private:

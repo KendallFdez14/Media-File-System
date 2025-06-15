@@ -6,10 +6,11 @@
 #include <nlohmann/json.hpp>
 #include <fstream>
 
+// Punto de entrada del Controller Node. Inicializa la API HTTP y los módulos principales.
 int main(int argc, char* argv[]) {
     crow::SimpleApp app;
     BlockMap blockMap;
-    RAID5Manager raid5(4, 4096);
+    RAID5Manager raid5(4, 4096); // Inicializa RAID 5 con 4 nodos y bloques de 4096 bytes
     raid5.addDiskNode({"127.0.0.1", 8000});
     raid5.addDiskNode({"127.0.0.1", 8001});
     raid5.addDiskNode({"127.0.0.1", 8002});
@@ -17,7 +18,7 @@ int main(int argc, char* argv[]) {
     DiskNodeHttpClient diskClient;
     DocumentManager docManager(blockMap, raid5, diskClient);
 
-    // Endpoint: Agregar documento (POST /add)
+    // Endpoint: Agrega un documento al sistema distribuido. Recibe el archivo por POST y lo distribuye en los Disk Nodes.
     CROW_ROUTE(app, "/add").methods("POST"_method)([&](const crow::request& req) {
         auto name = req.url_params.get("name");
         if (!name) return crow::response(400, "Falta el parámetro 'name'");
@@ -34,7 +35,7 @@ int main(int argc, char* argv[]) {
         }
     });
 
-    // Endpoint: Eliminar documento (DELETE /delete?name=...)
+    // Endpoint: Elimina un documento del sistema distribuido por nombre.
     CROW_ROUTE(app, "/delete").methods("DELETE"_method)([&](const crow::request& req) {
         auto name = req.url_params.get("name");
         if (!name) return crow::response(400, "Falta el parámetro 'name'");
@@ -46,7 +47,7 @@ int main(int argc, char* argv[]) {
         }
     });
 
-    // Endpoint: Buscar documento (GET /exists?name=...)
+    // Endpoint: Verifica si un documento existe en el sistema distribuido.
     CROW_ROUTE(app, "/exists").methods("GET"_method)([&](const crow::request& req) {
         auto name = req.url_params.get("name");
         if (!name) return crow::response(400, "Falta el parámetro 'name'");
@@ -55,7 +56,7 @@ int main(int argc, char* argv[]) {
         return crow::response(200, j.dump());
     });
 
-    // Endpoint: Descargar documento (GET /download?name=...)
+    // Endpoint: Descarga un documento reconstruido desde el RAID, tolerante a fallos.
     CROW_ROUTE(app, "/download").methods("GET"_method)([&](const crow::request& req) {
         auto name = req.url_params.get("name");
         if (!name) return crow::response(400, "Falta el parámetro 'name'");

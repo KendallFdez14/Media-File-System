@@ -1,9 +1,11 @@
 #include "DocumentManager.h"
 #include <stdexcept>
 
+// Constructor: inicializa el DocumentManager con referencias a BlockMap, RAID5Manager y DiskNodeHttpClient
 DocumentManager::DocumentManager(BlockMap& blockMap, RAID5Manager& raid5, DiskNodeHttpClient& diskClient)
     : blockMap(blockMap), raid5(raid5), diskClient(diskClient) {}
 
+// Agrega un documento al sistema distribuido, lo divide en bloques y lo distribuye
 void DocumentManager::addDocument(const std::string& name, const std::vector<uint8_t>& data) {
     auto stripes = raid5.stripeData(data);
     std::vector<std::vector<BlockLocation>> locations;
@@ -12,9 +14,8 @@ void DocumentManager::addDocument(const std::string& name, const std::vector<uin
     for (size_t s = 0; s < stripes.size(); ++s) {
         std::vector<BlockLocation> stripeLoc;
         for (size_t d = 0; d < stripes[s].size(); ++d) {
-            // Enviar bloque al Disk Node correspondiente
+            // Escribe el bloque en el nodo correspondiente
             if (d < diskNodes.size()) {
-                // Asegura que cada bloque tenga exactamente blockSize bytes
                 std::vector<uint8_t> padded = stripes[s][d].data;
                 padded.resize(blockSize, 0);
                 diskClient.writeBlock(diskNodes[d].ip, diskNodes[d].port, s, padded);
@@ -26,11 +27,12 @@ void DocumentManager::addDocument(const std::string& name, const std::vector<uin
     blockMap.addDocument(name, locations, data.size());
 }
 
+// Elimina un documento del sistema distribuido
 void DocumentManager::deleteDocument(const std::string& name) {
     blockMap.removeDocument(name);
-    // Aquí iría la lógica para eliminar los bloques en los Disk Nodes
 }
 
+// Recupera los datos de un documento, reconstruyendo si es necesario
 std::vector<uint8_t> DocumentManager::getDocument(const std::string& name) {
     auto* locations = blockMap.getBlockLocations(name);
     if (!locations) throw std::runtime_error("Documento no encontrado");
@@ -40,7 +42,6 @@ std::vector<uint8_t> DocumentManager::getDocument(const std::string& name) {
     for (size_t s = 0; s < locations->size(); ++s) {
         std::vector<Block> stripe;
         int missingIdx = -1;
-        // Leer todos los bloques del stripe
         for (size_t d = 0; d < (*locations)[s].size(); ++d) {
             if (d < diskNodes.size()) {
                 auto blockData = diskClient.readBlock(diskNodes[d].ip, diskNodes[d].port, s);
@@ -50,7 +51,7 @@ std::vector<uint8_t> DocumentManager::getDocument(const std::string& name) {
                     block.isParity = (*locations)[s][d].isParity;
                     stripe.push_back(block);
                 } else {
-                    // Bloque faltante
+                    // Si un bloque falta, se marca para reconstrucción por paridad
                     Block block;
                     block.data.clear();
                     block.isParity = (*locations)[s][d].isParity;
@@ -60,7 +61,7 @@ std::vector<uint8_t> DocumentManager::getDocument(const std::string& name) {
                 }
             }
         }
-        // Si hay un bloque faltante, reconstruirlo
+        // Si hay un bloque faltante, se reconstruye usando XOR de los otros bloques y la paridad
         if (missingIdx != -1) {
             std::vector<uint8_t> recovered(raid5.getBlockSize(), 0);
             for (size_t d = 0; d < stripe.size(); ++d) {
@@ -73,10 +74,11 @@ std::vector<uint8_t> DocumentManager::getDocument(const std::string& name) {
         }
         stripes.push_back(stripe);
     }
-    // Reconstruir datos usando RAID5Manager
+    // Se reconstruye el documento original a partir de los stripes
     return raid5.reconstructData(stripes, docSize);
 }
 
+// Verifica si existe un documento
 bool DocumentManager::exists(const std::string& name) const {
     return blockMap.getBlockLocations(name) != nullptr;
 }
