@@ -1,4 +1,5 @@
 file(REMOVE_RECURSE
+  "CMakeFiles/controller_node.dir/link.d"
   "CMakeFiles/controller_node.dir/core/BlockMap.cpp.o"
   "CMakeFiles/controller_node.dir/core/BlockMap.cpp.o.d"
   "CMakeFiles/controller_node.dir/core/RAID5Manager.cpp.o"

@@ -1,5 +1,15 @@
 # Ignore block storage for all disk nodes
-tecmfs_disk/disk0/blocks/
-tecmfs_disk/disk1/blocks/
-tecmfs_disk/disk2/blocks/
-tecmfs_disk/disk3/blocks/
+tecmfs_disk/
+
+# Ignore CMake cache
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+CMakeFiles/
+
+# Ignore build directory
+build/
+
+# Ignore install directory
+install/
+

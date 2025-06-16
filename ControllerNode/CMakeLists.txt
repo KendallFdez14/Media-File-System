@@ -4,7 +4,7 @@ project(ControllerNode)
 set(CMAKE_CXX_STANDARD 17)
 
 include_directories(${CMAKE_SOURCE_DIR}/../Crow/include)
-# Agregar CPR (HTTP client)
+find_package(OpenSSL REQUIRED)
 find_package(cpr REQUIRED)
 # Buscar Boost instalado en el sistema
 find_package(Boost REQUIRED)

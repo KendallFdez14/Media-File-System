@@ -1,4 +1,10 @@
- * Serving Flask app 'disk_node'
- * Debug mode: off
-Address already in use
-Port 8003 is in use by another program. Either identify and stop that program, or start the server with a different port.
+Traceback (most recent call last):
+  File "/home/thedegeo/gitclone/Media-File-System/tecmfs_disk/disk_node.py", line 16, in <module>
+    os.makedirs(disk_path, exist_ok=True)
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen os>", line 217, in makedirs
+  File "<frozen os>", line 217, in makedirs
+  File "<frozen os>", line 217, in makedirs
+  [Previous line repeated 2 more times]
+  File "<frozen os>", line 227, in makedirs
+PermissionError: [Errno 13] Permission denied: '/home/kendall'
