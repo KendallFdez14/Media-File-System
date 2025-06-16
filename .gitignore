@@ -1,0 +1,11 @@
+# Ignore block storage for all disk nodes
+tecmfs_disk/
+# Ignore CMake cache
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+CMakeFiles/
+# Ignore build directory
+build/
+# Ignore install directory
+install/
